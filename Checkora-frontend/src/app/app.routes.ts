@@ -33,12 +33,29 @@ export const routes: Routes = [
   },
   {
     path: 'signup',
-    loadComponent: () => import('./features/signup/signup.component').then((module) => module.SignupComponent),
+    loadComponent: () =>
+      import('./features/signup/signup.component').then((module) => module.SignupComponent),
+  },
+  {
+    path: 'forgot-password',
+    loadComponent: () =>
+      import('./features/auth/forgot-password.component').then(
+        (module) => module.ForgotPasswordComponent,
+      ),
+  },
+  {
+    path: 'reset-password',
+    loadComponent: () =>
+      import('./features/auth/reset-password.component').then(
+        (module) => module.ResetPasswordComponent,
+      ),
   },
   {
     path: 'checkin/:token',
     loadComponent: () =>
-      import('./features/checkin/checkin-form.component').then((module) => module.CheckinFormComponent),
+      import('./features/checkin/checkin-form.component').then(
+        (module) => module.CheckinFormComponent,
+      ),
   },
   {path: '', pathMatch: 'full', redirectTo: 'login'},
   {path: '**', redirectTo: 'login'},

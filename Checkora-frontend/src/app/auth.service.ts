@@ -7,6 +7,8 @@ import {environment} from '../environments/environment';
 export type CheckoraRole = 'SUPERADMIN' | 'OWNER';
 export type NeonUser = {id: string; email: string; name: string};
 type ProfileResponse = {user: NeonUser & {role: CheckoraRole}};
+type MessageResponse = {message: string};
+type ErrorResponse = {error?: string};
 
 @Injectable({providedIn: 'root'})
 export class AuthService {
@@ -79,6 +81,31 @@ export class AuthService {
     }
   }
 
+  async requestPasswordReset(email: string): Promise<string | null> {
+    try {
+      await firstValueFrom(
+        this.http.post<MessageResponse>(`${environment.apiUrl}/auth/password/forgot`, {email}),
+      );
+      return null;
+    } catch (error) {
+      return this.errorMessage(error, 'No se ha podido solicitar la recuperación de contraseña.');
+    }
+  }
+
+  async resetPassword(token: string, newPassword: string): Promise<string | null> {
+    try {
+      await firstValueFrom(
+        this.http.post<MessageResponse>(`${environment.apiUrl}/auth/password/reset`, {
+          token,
+          newPassword,
+        }),
+      );
+      return null;
+    } catch (error) {
+      return this.errorMessage(error, 'No se ha podido actualizar la contraseña.');
+    }
+  }
+
   async accessToken(): Promise<string | null> {
     return this.client.getJWTToken();
   }
@@ -87,5 +114,20 @@ export class AuthService {
     await this.client.adapter.signOut();
     this.user.set(null);
     this.role.set(null);
+  }
+
+  private errorMessage(error: unknown, fallback: string): string {
+    if (
+      typeof error === 'object' &&
+      error !== null &&
+      'error' in error &&
+      typeof error.error === 'object' &&
+      error.error !== null
+    ) {
+      const response = error.error as ErrorResponse;
+      return response.error ?? fallback;
+    }
+
+    return fallback;
   }
 }

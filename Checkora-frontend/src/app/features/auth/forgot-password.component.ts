@@ -1,26 +1,25 @@
 import {ChangeDetectionStrategy, Component, inject, signal} from '@angular/core';
 import {NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
-import {Router, RouterLink} from '@angular/router';
+import {RouterLink} from '@angular/router';
 import {TuiButton, TuiNotificationService} from '@taiga-ui/core';
 import {AuthService} from '../../auth.service';
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-forgot-password',
   imports: [ReactiveFormsModule, RouterLink, TuiButton],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.scss',
+  templateUrl: './forgot-password.component.html',
+  styleUrl: './auth-pages.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LoginComponent {
+export class ForgotPasswordComponent {
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly auth = inject(AuthService);
-  private readonly router = inject(Router);
   private readonly notifications = inject(TuiNotificationService);
 
+  protected readonly submitted = signal(false);
   protected readonly error = signal('');
   protected readonly form = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', Validators.required],
   });
 
   protected async submit(): Promise<void> {
@@ -30,24 +29,14 @@ export class LoginComponent {
     }
 
     this.error.set('');
-    const error = await this.auth.login(
-      this.form.controls.email.value,
-      this.form.controls.password.value,
-    );
+    const error = await this.auth.requestPasswordReset(this.form.controls.email.value);
 
     if (error) {
-      const message = 'El correo electrónico o la contraseña no son correctos.';
-      this.error.set(message);
-      this.notifications
-        .open(message, {
-          appearance: 'negative',
-          autoClose: 5_000,
-          label: 'No se ha podido iniciar sesión',
-        })
-        .subscribe();
+      this.error.set(error);
+      this.notifications.open(error, {appearance: 'negative', autoClose: 5_000}).subscribe();
       return;
     }
 
-    await this.router.navigateByUrl('/dashboard');
+    this.submitted.set(true);
   }
 }
