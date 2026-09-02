@@ -20,19 +20,25 @@ export class ResetPasswordComponent {
   private readonly token = this.route.snapshot.queryParamMap.get('token') ?? '';
 
   protected readonly error = signal('');
+  protected readonly saving = signal(false);
   protected readonly form = this.fb.group({
     password: ['', [Validators.required, Validators.minLength(12), Validators.maxLength(128)]],
     confirmation: ['', Validators.required],
   });
 
   protected async submit(): Promise<void> {
+    if (this.saving()) {
+      return;
+    }
+
     if (!this.token) {
-      this.error.set('El enlace de recuperación no es válido o ha caducado.');
+      this.error.set('El enlace de recuperación no es válido o ha caducado. Solicita uno nuevo.');
       return;
     }
 
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.error.set('Crea una contraseña de entre 12 y 128 caracteres y repítela.');
       return;
     }
 
@@ -42,7 +48,9 @@ export class ResetPasswordComponent {
     }
 
     this.error.set('');
+    this.saving.set(true);
     const error = await this.auth.resetPassword(this.token, this.form.controls.password.value);
+    this.saving.set(false);
 
     if (error) {
       this.error.set(error);
