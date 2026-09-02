@@ -1,0 +1,77 @@
+<main>
+  <header>
+    <p class="eyebrow">Panel de control</p>
+    <h1>Resumen</h1>
+    <p>Consulta la actividad de tus enlaces de registro.</p>
+  </header>
+
+  @if (loading()) {
+    <p role="status">Cargando resultados…</p>
+  }
+
+  @if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  }
+
+  @if (data(); as dashboard) {
+    @if (dashboard.role === 'SUPERADMIN') {
+      <section>
+        <div class="section-heading">
+          <div>
+            <h2>Propietarios</h2>
+            <p>Registros y enlace público de cada propietario.</p>
+          </div>
+          <a class="action" routerLink="/owners">Dar de alta propietario</a>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Nombre</th>
+                <th scope="col">Email</th>
+                <th scope="col">Registros</th>
+                <th scope="col">URL del formulario</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (owner of dashboard.owners; track owner.auth_user_id) {
+                <tr>
+                  <td>{{ owner.name ?? 'No disponible' }}</td>
+                  <td>{{ owner.email ?? 'No disponible' }}</td>
+                  <td>{{ owner.submissions }}</td>
+                  <td>
+                    @if (owner.checkin_url; as url) {
+                      <a class="form-link" [href]="url" target="_blank" rel="noopener">Abrir formulario</a>
+                    } @else {
+                      <span>No disponible</span>
+                    }
+                  </td>
+                </tr>
+              } @empty {
+                <tr><td colspan="4">Todavía no hay propietarios dados de alta.</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </section>
+    } @else {
+      <section>
+        <h2>Registros recibidos</h2>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th scope="col">Huésped</th><th scope="col">Email</th><th scope="col">Fecha</th></tr>
+            </thead>
+            <tbody>
+              @for (item of dashboard.submissions; track item.id) {
+                <tr><td>{{ item.first_name }} {{ item.first_surname }}</td><td>{{ item.email }}</td><td>{{ item.submitted_at | date }}</td></tr>
+              } @empty {
+                <tr><td colspan="3">Aún no has recibido registros.</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </section>
+    }
+  }
+</main>

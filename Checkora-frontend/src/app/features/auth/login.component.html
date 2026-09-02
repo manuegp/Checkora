@@ -1,0 +1,37 @@
+<main>
+  <form [formGroup]="form" (ngSubmit)="submit()" autocomplete="on">
+    <span>CHECKORA</span>
+    <h1>Accede a tu cuenta</h1>
+
+    <label for="login-email">
+      Email
+      <input
+        id="login-email"
+        type="email"
+        name="email"
+        formControlName="email"
+        autocomplete="username"
+        inputmode="email"
+        autocapitalize="none"
+        spellcheck="false"
+      />
+    </label>
+
+    <label for="login-password">
+      Contraseña
+      <input
+        id="login-password"
+        type="password"
+        name="password"
+        formControlName="password"
+        autocomplete="current-password"
+      />
+    </label>
+
+    @if (error()) {
+      <p role="alert" aria-live="assertive">{{ error() }}</p>
+    }
+
+    <button tuiButton type="submit">Iniciar sesión</button>
+  </form>
+</main>

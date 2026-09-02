@@ -1,0 +1,22 @@
+<div class="app-shell">
+  <aside class="sidebar" aria-label="Navegación principal">
+    <a class="brand" routerLink="/dashboard" aria-label="Checkora, ir al panel">CHECKORA</a>
+
+    <nav>
+      <a routerLink="/dashboard" routerLinkActive="is-active">Resumen</a>
+      @if (auth.role() === 'SUPERADMIN') {
+        <a routerLink="/owners" routerLinkActive="is-active">Propietarios</a>
+      }
+    </nav>
+
+    <div class="account">
+      <p class="account-name">{{ auth.user()?.name }}</p>
+      <p class="account-email">{{ auth.user()?.email }}</p>
+      <button tuiButton type="button" appearance="secondary" (click)="logout()">Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <main id="main-content" class="content" tabindex="-1">
+    <router-outlet />
+  </main>
+</div>

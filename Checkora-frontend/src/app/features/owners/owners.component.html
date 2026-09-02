@@ -1,0 +1,85 @@
+<main>
+  <header>
+    <p class="eyebrow">Administración</p>
+    <h1>Dar de alta propietario</h1>
+    <p>Crea su cuenta de acceso y su enlace único para huéspedes.</p>
+  </header>
+
+  <section>
+    <form [formGroup]="form" (ngSubmit)="submit()" autocomplete="off" novalidate>
+      <label for="owner-name">
+        Nombre
+        <input
+          id="owner-name"
+          type="text"
+          name="name"
+          formControlName="name"
+          autocomplete="name"
+          maxlength="120"
+          aria-describedby="owner-name-error"
+        />
+      </label>
+      @if (form.controls.name.invalid && form.controls.name.touched) {
+        <p id="owner-name-error" class="field-error">Introduce un nombre de al menos 2 caracteres.</p>
+      }
+      <label for="owner-email">
+        Email
+        <input
+          id="owner-email"
+          type="email"
+          name="email"
+          formControlName="email"
+          autocomplete="email"
+          inputmode="email"
+          autocapitalize="none"
+          spellcheck="false"
+          maxlength="320"
+          aria-describedby="owner-email-error"
+        />
+      </label>
+      @if (form.controls.email.invalid && form.controls.email.touched) {
+        <p id="owner-email-error" class="field-error">Introduce un email válido.</p>
+      }
+
+      <label for="owner-password">
+        Contraseña inicial
+        <input
+          id="owner-password"
+          type="password"
+          name="password"
+          formControlName="password"
+          autocomplete="new-password"
+          minlength="12"
+          maxlength="128"
+          aria-describedby="owner-password-help owner-password-error"
+        />
+      </label>
+      <p id="owner-password-help" class="hint">Mínimo 12 caracteres. Comparte esta contraseña con el propietario por un canal seguro.</p>
+      @if (form.controls.password.invalid && form.controls.password.touched) {
+        <p id="owner-password-error" class="field-error">La contraseña debe tener al menos 12 caracteres.</p>
+      }
+
+      @if (error()) {
+        <p class="error" role="alert">{{ error() }}</p>
+      }
+
+      <button tuiButton type="submit" [disabled]="saving()">
+        {{ saving() ? 'Creando…' : 'Crear propietario y enlace' }}
+      </button>
+    </form>
+  </section>
+
+  @if (createdOwner(); as result) {
+    <section class="result" aria-live="polite">
+      <h2>Propietario creado</h2>
+      <dl>
+        <div><dt>Nombre</dt><dd>{{ result.owner.name }}</dd></div>
+        <div><dt>Email</dt><dd>{{ result.owner.email }}</dd></div>
+      </dl>
+      <p>Comparte este enlace con el propietario para que lo entregue a sus huéspedes.</p>
+      <input type="url" [value]="result.checkinUrl" readonly aria-label="Enlace público del propietario" />
+      <a [href]="result.checkinUrl" target="_blank" rel="noopener">Abrir enlace de registro</a>
+    </section>
+  }
+</main>
+
