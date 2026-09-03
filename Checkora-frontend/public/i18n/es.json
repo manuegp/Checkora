@@ -1,0 +1,75 @@
+{
+  "checkin": {
+    "language": {
+      "label": "Idioma",
+      "auto": "Automático (idioma del navegador)",
+      "english": "Inglés",
+      "spanish": "Espa&ntilde;ol"
+    },
+    "title": "Registro de huésped",
+    "subtitle": "Completa todos los campos obligatorios para formalizar tu estancia.",
+    "personal": {
+      "section": "Datos personales",
+      "email": "Email",
+      "emailError": "Introduce un email válido.",
+      "phone": "Teléfono móvil",
+      "phoneError": "El teléfono móvil es obligatorio.",
+      "firstName": "Nombre",
+      "firstNameError": "El nombre es obligatorio.",
+      "firstSurname": "Primer apellido",
+      "firstSurnameError": "El primer apellido es obligatorio.",
+      "secondSurname": "Segundo apellido",
+      "gender": "Sexo",
+      "select": "Selecciona una opción",
+      "female": "Mujer",
+      "male": "Hombre",
+      "other": "Otro / no indicar",
+      "genderError": "Selecciona una opción.",
+      "country": "País",
+      "countryPlaceholder": "Busca un país",
+      "countryError": "Selecciona tu país.",
+      "birthDate": "Fecha de nacimiento",
+      "birthDatePlaceholder": "Selecciona tu fecha de nacimiento",
+      "birthDateError": "La fecha de nacimiento es obligatoria."
+    },
+    "document": {
+      "section": "Documento de identidad",
+      "type": "Tipo de documento",
+      "dni": "DNI",
+      "nie": "NIE",
+      "passport": "Pasaporte",
+      "other": "Otro",
+      "typeError": "Selecciona el tipo de documento.",
+      "number": "Número de documento",
+      "numberError": "El número de documento es obligatorio.",
+      "supportNumber": "Número de soporte",
+      "supportNumberError": "El número de soporte es obligatorio."
+    },
+    "residence": {
+      "section": "Residencia habitual",
+      "place": "Lugar de residencia habitual",
+      "placeError": "Este campo es obligatorio.",
+      "address": "Dirección",
+      "addressError": "La dirección es obligatoria.",
+      "postalCode": "Código postal",
+      "postalCodeError": "El código postal es obligatorio.",
+      "municipality": "Municipio",
+      "municipalityError": "El municipio es obligatorio."
+    },
+    "signature": {
+      "section": "Firma",
+      "description": "Dibuja tu firma con el ratón o el dedo.",
+      "area": "Área para firmar",
+      "error": "La firma es obligatoria.",
+      "clear": "Borrar firma"
+    },
+    "privacy": {
+      "accept": "Acepto la política de privacidad.",
+      "error": "Debes aceptar la política de privacidad."
+    },
+    "submit": "Enviar registro",
+    "submitSuccess": "Registro enviado correctamente.",
+    "submitEmailWarning": "El registro se guardo, pero no se pudo avisar al propietario por correo.",
+    "submitSending": "Enviando..."
+  }
+}

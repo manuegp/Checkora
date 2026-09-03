@@ -1,1 +1,66 @@
-<main class="page"><header><span>CHECKORA</span><h1>Registro de huésped</h1><p>Completa tus datos para formalizar tu estancia.</p></header><form class="card" [formGroup]="form" (ngSubmit)="submit()" novalidate><section><h2>Datos personales</h2><div class="grid"><label>Email *<input type="email" formControlName="email" /></label><label>Teléfono móvil *<input type="tel" formControlName="mobilePhone" /></label><label>Nombre *<input formControlName="firstName" /></label><label>Primer apellido *<input formControlName="firstSurname" /></label><label>Segundo apellido<input formControlName="secondSurname" /></label><label>Sexo *<select formControlName="gender"><option value="">Selecciona</option><option value="female">Mujer</option><option value="male">Hombre</option><option value="other">Otro / no indicar</option></select></label><label>Nacionalidad *<input formControlName="nationality" /></label><label>Fecha de nacimiento *<input type="date" formControlName="birthDate" /></label></div></section><section><h2>Documento de identidad</h2><div class="grid"><label>Tipo de documento *<select formControlName="documentType"><option value="">Selecciona</option><option value="dni">DNI</option><option value="nie">NIE</option><option value="passport">Pasaporte</option><option value="other">Otro</option></select></label><label>Número de documento *<input formControlName="documentNumber" /></label><label>Número de soporte<input formControlName="documentSupportNumber" /></label></div></section><section><h2>Residencia habitual</h2><div class="grid"><label>Lugar de residencia habitual *<input formControlName="habitualResidence" /></label><label>Dirección *<input formControlName="address" /></label><label>Código postal *<input formControlName="postalCode" /></label><label>Municipio *<input formControlName="municipality" /></label></div></section><section><h2>Firma</h2><p>Dibuja tu firma con el ratón o el dedo.</p><canvas #signatureCanvas class="signature" width="700" height="180" aria-label="Área para firmar" (pointerdown)="begin($event)" (pointermove)="draw($event)" (pointerup)="end()" (pointerleave)="end()"></canvas><button tuiButton type="button" appearance="flat" (click)="clear()">Borrar firma</button></section><label><input type="checkbox" formControlName="privacyAccepted" /> Acepto la política de privacidad. *</label><button tuiButton type="submit" size="l">Enviar registro</button></form></main>
+<main class="page">
+  <header>
+    <span>CHECKORA</span>
+    <h1>{{ 'checkin.title' | transloco }}</h1>
+    <p>{{ 'checkin.subtitle' | transloco }}</p>
+  </header>
+
+  <div class="language-selector"><label for="language">{{ 'checkin.language.label' | transloco }}</label><tui-textfield tuiChevron [tuiTextfieldCleaner]="false"><input id="language" tuiSelect [ngModel]="selectedLanguage()" (ngModelChange)="setLanguage($event)" [ngModelOptions]="{standalone: true}" [placeholder]="'checkin.language.auto' | transloco" /><tui-data-list *tuiDropdown><button tuiOption value="auto">Autom&#225;tico</button><button tuiOption value="en">English</button><button tuiOption value="es">Espa&#241;ol</button></tui-data-list></tui-textfield></div>
+  <form class="card" tuiForm="m" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <tui-elastic-container class="form-content">
+    <section>
+      <h2>{{ 'checkin.personal.section' | transloco }}</h2>
+      <div class="grid">
+        <div class="field"><label>{{ 'checkin.personal.email' | transloco }} *<input type="email" formControlName="email" [attr.aria-invalid]="form.controls.email.invalid && form.controls.email.touched" /></label>@if (form.controls.email.invalid && form.controls.email.touched) {<p class="field-error">{{ 'checkin.personal.emailError' | transloco }}</p>}</div>
+        <div class="field"><label>{{ 'checkin.personal.phone' | transloco }} *<input type="tel" formControlName="mobilePhone" [attr.aria-invalid]="form.controls.mobilePhone.invalid && form.controls.mobilePhone.touched" /></label>@if (form.controls.mobilePhone.invalid && form.controls.mobilePhone.touched) {<p class="field-error">{{ 'checkin.personal.phoneError' | transloco }}</p>}</div>
+        <div class="field"><label>{{ 'checkin.personal.firstName' | transloco }} *<input formControlName="firstName" [attr.aria-invalid]="form.controls.firstName.invalid && form.controls.firstName.touched" /></label>@if (form.controls.firstName.invalid && form.controls.firstName.touched) {<p class="field-error">{{ 'checkin.personal.firstNameError' | transloco }}</p>}</div>
+        <div class="field"><label>{{ 'checkin.personal.firstSurname' | transloco }} *<input formControlName="firstSurname" [attr.aria-invalid]="form.controls.firstSurname.invalid && form.controls.firstSurname.touched" /></label>@if (form.controls.firstSurname.invalid && form.controls.firstSurname.touched) {<p class="field-error">{{ 'checkin.personal.firstSurnameError' | transloco }}</p>}</div>
+        <div class="field"><label>{{ 'checkin.personal.secondSurname' | transloco }}<input formControlName="secondSurname" /></label></div>
+        <div class="field"><label>{{ 'checkin.personal.gender' | transloco }} *<select formControlName="gender" [attr.aria-invalid]="form.controls.gender.invalid && form.controls.gender.touched"><option value="">{{ 'checkin.personal.select' | transloco }}</option><option value="female">{{ 'checkin.personal.female' | transloco }}</option><option value="male">{{ 'checkin.personal.male' | transloco }}</option><option value="other">{{ 'checkin.personal.other' | transloco }}</option></select></label>@if (form.controls.gender.invalid && form.controls.gender.touched) {<p class="field-error">{{ 'checkin.personal.genderError' | transloco }}</p>}</div>
+        <div class="field country-field"><label>{{ 'checkin.personal.country' | transloco }} *</label>
+          <tui-textfield tuiChevron>
+            <input tuiComboBox formControlName="nationality" [placeholder]="'checkin.personal.countryPlaceholder' | transloco" [attr.aria-invalid]="form.controls.nationality.invalid && form.controls.nationality.touched" />
+            <tui-data-list *tuiDropdown>@for (country of countries() | tuiFilterByInput: countryFilter; track country.code) {<button tuiOption [value]="country.flag + ' ' + country.name"><img class="country-flag" [src]="country.code | tuiFlag" width="20" height="20" alt="" />{{ country.name }}</button>}</tui-data-list>
+          </tui-textfield>
+          @if (form.controls.nationality.invalid && form.controls.nationality.touched) {<p class="field-error">{{ 'checkin.personal.countryError' | transloco }}</p>}
+        </div>
+        <div class="field"><label for="birth-date">{{ 'checkin.personal.birthDate' | transloco }} *</label><tui-textfield [tuiTextfieldCleaner]="false"><input id="birth-date" tuiInputDate formControlName="birthDate" [placeholder]="'checkin.personal.birthDatePlaceholder' | transloco" [attr.aria-invalid]="form.controls.birthDate.invalid && form.controls.birthDate.touched" /><tui-calendar *tuiDropdown /></tui-textfield>@if (form.controls.birthDate.invalid && form.controls.birthDate.touched) {<p class="field-error">{{ 'checkin.personal.birthDateError' | transloco }}</p>}</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>{{ 'checkin.document.section' | transloco }}</h2>
+      <div class="grid">
+        <div class="field"><label for="document-type">{{ 'checkin.document.type' | transloco }} *</label><tui-textfield tuiChevron [tuiTextfieldCleaner]="false"><input id="document-type" tuiSelect formControlName="documentType" [placeholder]="'checkin.personal.select' | transloco" [attr.aria-invalid]="form.controls.documentType.invalid && form.controls.documentType.touched" /><tui-data-list *tuiDropdown><button tuiOption value="dni">{{ 'checkin.document.dni' | transloco }}</button><button tuiOption value="nie">{{ 'checkin.document.nie' | transloco }}</button><button tuiOption value="passport">{{ 'checkin.document.passport' | transloco }}</button><button tuiOption value="other">{{ 'checkin.document.other' | transloco }}</button></tui-data-list></tui-textfield>@if (form.controls.documentType.invalid && form.controls.documentType.touched) {<p class="field-error">{{ 'checkin.document.typeError' | transloco }}</p>}</div>
+        <div class="field"><label>{{ 'checkin.document.number' | transloco }} *<input formControlName="documentNumber" [attr.aria-invalid]="form.controls.documentNumber.invalid && form.controls.documentNumber.touched" /></label>@if (form.controls.documentNumber.invalid && form.controls.documentNumber.touched) {<p class="field-error">{{ 'checkin.document.numberError' | transloco }}</p>}</div>
+        <div class="field"><label>{{ 'checkin.document.supportNumber' | transloco }} *<input formControlName="documentSupportNumber" [attr.aria-invalid]="form.controls.documentSupportNumber.invalid && form.controls.documentSupportNumber.touched" /></label>@if (form.controls.documentSupportNumber.invalid && form.controls.documentSupportNumber.touched) {<p class="field-error">{{ 'checkin.document.supportNumberError' | transloco }}</p>}</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>{{ 'checkin.residence.section' | transloco }}</h2>
+      <div class="grid">
+        <div class="field"><label>{{ 'checkin.residence.place' | transloco }} *<input formControlName="habitualResidence" [attr.aria-invalid]="form.controls.habitualResidence.invalid && form.controls.habitualResidence.touched" /></label>@if (form.controls.habitualResidence.invalid && form.controls.habitualResidence.touched) {<p class="field-error">{{ 'checkin.residence.placeError' | transloco }}</p>}</div>
+        <div class="field"><label>{{ 'checkin.residence.address' | transloco }} *<input formControlName="address" [attr.aria-invalid]="form.controls.address.invalid && form.controls.address.touched" /></label>@if (form.controls.address.invalid && form.controls.address.touched) {<p class="field-error">{{ 'checkin.residence.addressError' | transloco }}</p>}</div>
+        <div class="field"><label>{{ 'checkin.residence.postalCode' | transloco }} *<input formControlName="postalCode" [attr.aria-invalid]="form.controls.postalCode.invalid && form.controls.postalCode.touched" /></label>@if (form.controls.postalCode.invalid && form.controls.postalCode.touched) {<p class="field-error">{{ 'checkin.residence.postalCodeError' | transloco }}</p>}</div>
+        <div class="field"><label>{{ 'checkin.residence.municipality' | transloco }} *<input formControlName="municipality" [attr.aria-invalid]="form.controls.municipality.invalid && form.controls.municipality.touched" /></label>@if (form.controls.municipality.invalid && form.controls.municipality.touched) {<p class="field-error">{{ 'checkin.residence.municipalityError' | transloco }}</p>}</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>{{ 'checkin.signature.section' | transloco }}</h2>
+      <p>{{ 'checkin.signature.description' | transloco }}</p>
+      <canvas #signatureCanvas class="signature" [class.signature-invalid]="form.controls.signature.invalid && form.controls.signature.touched" width="700" height="180" [attr.aria-label]="'checkin.signature.area' | transloco" (pointerdown)="begin($event)" (pointermove)="draw($event)" (pointerup)="end()" (pointerleave)="end()"></canvas>
+      @if (form.controls.signature.invalid && form.controls.signature.touched) {<p class="field-error">{{ 'checkin.signature.error' | transloco }}</p>}
+      <button tuiButton type="button" appearance="flat" (click)="clear()">{{ 'checkin.signature.clear' | transloco }}</button>
+    </section>
+
+    </tui-elastic-container>
+
+    <div class="privacy"><label for="privacy-accepted"><input id="privacy-accepted" tuiCheckbox type="checkbox" formControlName="privacyAccepted" [attr.aria-invalid]="form.controls.privacyAccepted.invalid && form.controls.privacyAccepted.touched" /> {{ 'checkin.privacy.accept' | transloco }} *</label>@if (form.controls.privacyAccepted.invalid && form.controls.privacyAccepted.touched) {<p class="field-error">{{ 'checkin.privacy.error' | transloco }}</p>}</div>
+    @if (submitError()) {<p class="field-error" role="alert">{{ submitError() }}</p>}
+    @if (submitted()) {<p class="submit-success" role="status">{{ 'checkin.submitSuccess' | transloco }}</p>}
+    @if (emailNotificationSent() === false) {<p class="submit-warning" role="status">{{ 'checkin.submitEmailWarning' | transloco }}</p>}
+    <button tuiButton type="submit" size="l" [disabled]="submitting() || submitted()" [attr.aria-busy]="submitting()">@if (submitting()) { {{ 'checkin.submitSending' | transloco }} } @else { {{ 'checkin.submit' | transloco }} }</button>
+  </form>
+</main>

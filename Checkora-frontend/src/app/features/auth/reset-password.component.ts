@@ -1,12 +1,12 @@
 import {ChangeDetectionStrategy, Component, inject, signal} from '@angular/core';
 import {NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
-import {TuiButton, TuiNotificationService} from '@taiga-ui/core';
+import {TuiButton, TuiLoader, TuiNotificationService} from '@taiga-ui/core';
 import {AuthService} from '../../auth.service';
 
 @Component({
   selector: 'app-reset-password',
-  imports: [ReactiveFormsModule, RouterLink, TuiButton],
+  imports: [ReactiveFormsModule, RouterLink, TuiButton, TuiLoader],
   templateUrl: './reset-password.component.html',
   styleUrl: './auth-pages.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

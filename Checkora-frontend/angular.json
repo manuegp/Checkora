@@ -27,13 +27,19 @@
               {
                 "glob": "**/*",
                 "input": "public"
-              }
+              },
+              {
+              "glob": "**/*",
+              "input": "node_modules/@taiga-ui/icons/src",
+              "output": "assets/taiga-ui/icons"
+            }
             ],
             "styles": [
               "src/styles.scss",
               "@taiga-ui/styles/taiga-ui-theme.less",
               "@taiga-ui/styles/taiga-ui-fonts.less",
               "@taiga-ui/addon-mobile/styles/taiga-ui-mobile.less"
+              
             ]
           },
           "configurations": {

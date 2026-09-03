@@ -1,7 +1,7 @@
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {ChangeDetectionStrategy, Component, inject, signal} from '@angular/core';
 import {NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
-import {TuiButton, TuiNotificationService} from '@taiga-ui/core';
+import {TuiButton, TuiLoader, TuiNotificationService} from '@taiga-ui/core';
 import {firstValueFrom} from 'rxjs';
 import {environment} from '../../../environments/environment';
 
@@ -12,7 +12,7 @@ type CreateOwnerResponse = {
 
 @Component({
   selector: 'app-owners',
-  imports: [ReactiveFormsModule, TuiButton],
+  imports: [ReactiveFormsModule, TuiButton, TuiLoader],
   templateUrl: './owners.component.html',
   styleUrl: './owners.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,6 +32,10 @@ export class OwnersComponent {
 
   protected async submit(): Promise<void> {
     if (this.form.invalid) {
+    if (this.saving()) {
+      return;
+    }
+
       this.form.markAllAsTouched();
       this.error.set('Completa nombre y email válido.');
       return;

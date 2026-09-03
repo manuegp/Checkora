@@ -30,7 +30,7 @@
                 <th scope="col">Nombre</th>
                 <th scope="col">Email</th>
                 <th scope="col">Registros</th>
-                <th scope="col">URL del formulario</th>
+                <th scope="col">Formulario</th>
               </tr>
             </thead>
             <tbody>
@@ -41,14 +41,37 @@
                   <td>{{ owner.submissions }}</td>
                   <td>
                     @if (owner.checkin_url; as url) {
-                      <a class="form-link" [href]="url" target="_blank" rel="noopener">Abrir formulario</a>
+                      <div class="form-actions">
+                        <button tuiIconButton type="button" appearance="secondary" size="s" iconStart="@tui.copy" [tuiHint]="'Copiar URL del formulario'" (click)="copyFormUrl(url)">Copiar URL</button>
+                        <a tuiIconButton appearance="primary" size="s" iconStart="@tui.arrow-up-right" [tuiHint]="'Abrir el formulario en una pestaña nueva'" [href]="url" target="_blank" rel="noopener">Abrir formulario</a>
+                      </div>
                     } @else {
                       <span>No disponible</span>
                     }
                   </td>
                 </tr>
               } @empty {
-                <tr><td colspan="4">Todavía no hay propietarios dados de alta.</td></tr>
+                <tr><td colspan="4">Todav&iacute;a no hay propietarios dados de alta.</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section>
+        <div class="section-heading">
+          <div>
+            <h2>Todos los registros</h2>
+            <p>Consulta cualquier registro recibido y abre sus datos completos.</p>
+          </div>
+        </div>
+        <div class="table-wrapper">
+          <table class="records-table">
+            <thead><tr><th scope="col">H&uacute;sped</th><th scope="col">Email</th><th scope="col">Propietario</th><th scope="col">Fecha</th><th scope="col">Acciones</th></tr></thead>
+            <tbody>
+              @for (item of dashboard.submissions; track item.id) {
+                <tr><td>{{ item.first_name }} {{ item.first_surname }}</td><td>{{ item.email }}</td><td>{{ item.owner_name ?? 'No disponible' }}</td><td>{{ item.submitted_at | date }}</td><td><button tuiButton type="button" appearance="secondary" size="s" (click)="openSubmission(item)">Ver datos</button></td></tr>
+              } @empty {
+                <tr><td colspan="5">Todav&iacute;a no hay registros recibidos.</td></tr>
               }
             </tbody>
           </table>
@@ -60,18 +83,46 @@
         <div class="table-wrapper">
           <table>
             <thead>
-              <tr><th scope="col">Huésped</th><th scope="col">Email</th><th scope="col">Fecha</th></tr>
+              <tr><th scope="col">H&uacute;sped</th><th scope="col">Email</th><th scope="col">Fecha</th><th scope="col">Acciones</th></tr>
             </thead>
             <tbody>
               @for (item of dashboard.submissions; track item.id) {
-                <tr><td>{{ item.first_name }} {{ item.first_surname }}</td><td>{{ item.email }}</td><td>{{ item.submitted_at | date }}</td></tr>
+                <tr><td>{{ item.first_name }} {{ item.first_surname }}</td><td>{{ item.email }}</td><td>{{ item.submitted_at | date }}</td><td><button tuiButton type="button" appearance="secondary" size="s" (click)="openSubmission(item)">Ver datos</button></td></tr>
               } @empty {
-                <tr><td colspan="3">Aún no has recibido registros.</td></tr>
+                <tr><td colspan="4">Aún no has recibido registros.</td></tr>
               }
             </tbody>
           </table>
         </div>
       </section>
     }
+  }
+  @if (selectedSubmission(); as submission) {
+    <div class="modal-backdrop" role="presentation" (click)="closeSubmission()">
+      <section class="submission-modal" role="dialog" aria-modal="true" aria-labelledby="submission-title" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <div><p class="eyebrow">Detalle del registro</p><h2 id="submission-title">{{ submission.first_name }} {{ submission.first_surname }}</h2></div>
+          <button tuiButton type="button" appearance="secondary" size="s" (click)="closeSubmission()">Cerrar</button>
+        </div>
+        <dl class="detail-grid">
+          <div><dt>Nombre completo</dt><dd>{{ submission.first_name }} {{ submission.first_surname }} {{ submission.second_surname }}</dd></div>
+          <div><dt>Email</dt><dd>{{ submission.email }}</dd></div>
+          <div><dt>Tel&eacute;fono m&oacute;vil</dt><dd>{{ valueOrDash(submission.mobile_phone) }}</dd></div>
+          <div><dt>Fecha de nacimiento</dt><dd>{{ submission.birth_date | date:'dd/MM/yyyy' }}</dd></div>
+          <div><dt>Nacionalidad</dt><dd>{{ valueOrDash(submission.nationality) }}</dd></div>
+          <div><dt>Sexo</dt><dd>{{ valueOrDash(submission.gender) }}</dd></div>
+          <div><dt>Tipo de documento</dt><dd>{{ documentTypeLabel(submission.document_type) }}</dd></div>
+          <div><dt>N&uacute;mero de documento</dt><dd>{{ valueOrDash(submission.document_number) }}</dd></div>
+          <div><dt>N&uacute;mero de soporte</dt><dd>{{ valueOrDash(submission.document_support_number) }}</dd></div>
+          <div><dt>Residencia habitual</dt><dd>{{ valueOrDash(submission.habitual_residence) }}</dd></div>
+          <div><dt>Direcci&oacute;n</dt><dd>{{ valueOrDash(submission.address) }}</dd></div>
+          <div><dt>C&oacute;digo postal</dt><dd>{{ valueOrDash(submission.postal_code) }}</dd></div>
+          <div><dt>Municipio</dt><dd>{{ valueOrDash(submission.municipality) }}</dd></div>
+          <div><dt>Fecha de env&iacute;o</dt><dd>{{ submission.submitted_at | date:'dd/MM/yyyy HH:mm' }}</dd></div>
+          <div><dt>Privacidad aceptada</dt><dd>{{ submission.privacy_accepted_at | date:'dd/MM/yyyy HH:mm' }}</dd></div>
+        </dl>
+        @if (submission.signature_url; as signature) {<div class="signature-preview"><h3>Firma</h3><img [src]="signature" alt="Firma del hu&eacute;sped" /></div>}
+      </section>
+    </div>
   }
 </main>

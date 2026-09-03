@@ -12,7 +12,14 @@
     <div class="account">
       <p class="account-name">{{ auth.user()?.name }}</p>
       <p class="account-email">{{ auth.user()?.email }}</p>
-      <button tuiButton type="button" appearance="secondary" (click)="logout()">Cerrar sesión</button>
+      <button tuiButton type="button" appearance="secondary" (click)="logout()" [disabled]="loggingOut()" [attr.aria-busy]="loggingOut()">
+        @if (loggingOut()) {
+          <tui-loader size="s" [inheritColor]="true"></tui-loader>
+          Cerrando sesión…
+        } @else {
+          Cerrar sesión
+        }
+      </button>
     </div>
   </aside>
 

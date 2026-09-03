@@ -1,0 +1,75 @@
+{
+  "checkin": {
+    "language": {
+      "label": "Language",
+      "auto": "Automatic (browser language)",
+      "english": "English",
+      "spanish": "Spanish"
+    },
+    "title": "Guest registration",
+    "subtitle": "Complete all mandatory fields to formalize your stay.",
+    "personal": {
+      "section": "Personal information",
+      "email": "Email",
+      "emailError": "Enter a valid email address.",
+      "phone": "Mobile phone",
+      "phoneError": "Mobile phone is required.",
+      "firstName": "First name",
+      "firstNameError": "First name is required.",
+      "firstSurname": "First surname",
+      "firstSurnameError": "First surname is required.",
+      "secondSurname": "Second surname",
+      "gender": "Gender",
+      "select": "Select an option",
+      "female": "Female",
+      "male": "Male",
+      "other": "Other / Prefer not to say",
+      "genderError": "Select an option.",
+      "country": "Country",
+      "countryPlaceholder": "Search for a country",
+      "countryError": "Select a country.",
+      "birthDate": "Date of birth",
+      "birthDatePlaceholder": "Select your date of birth",
+      "birthDateError": "Date of birth is required."
+    },
+    "document": {
+      "section": "Identity document",
+      "type": "Document type",
+      "dni": "National ID",
+      "nie": "Foreigner ID",
+      "passport": "Passport",
+      "other": "Other",
+      "typeError": "Select the document type.",
+      "number": "Document number",
+      "numberError": "Document number is required.",
+      "supportNumber": "Support number",
+      "supportNumberError": "Support number is required."
+    },
+    "residence": {
+      "section": "Usual residence",
+      "place": "Usual place of residence",
+      "placeError": "This field is required.",
+      "address": "Address",
+      "addressError": "Address is required.",
+      "postalCode": "Postal code",
+      "postalCodeError": "Postal code is required.",
+      "municipality": "Municipality",
+      "municipalityError": "Municipality is required."
+    },
+    "signature": {
+      "section": "Signature",
+      "description": "Draw your signature with a mouse or finger.",
+      "area": "Signature area",
+      "error": "Signature is required.",
+      "clear": "Clear signature"
+    },
+    "privacy": {
+      "accept": "I accept the privacy policy.",
+      "error": "You must accept the privacy policy."
+    },
+    "submit": "Submit registration",
+    "submitSuccess": "Registration sent successfully.",
+    "submitEmailWarning": "The registration was saved, but the owner could not be notified by email.",
+    "submitSending": "Sending..."
+  }
+}

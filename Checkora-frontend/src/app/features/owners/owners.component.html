@@ -47,7 +47,12 @@
       }
 
       <button tuiButton type="submit" [disabled]="saving()">
-        {{ saving() ? 'Creando…' : 'Crear propietario, enlace y enviar invitación' }}
+        @if (saving()) {
+          <tui-loader size="s" [inheritColor]="true"></tui-loader>
+          Creando…
+        } @else {
+          Crear propietario, enlace y enviar invitación
+        }
       </button>
     </form>
   </section>

@@ -32,7 +32,14 @@
       <p role="alert" aria-live="assertive">{{ error() }}</p>
     }
 
-    <button tuiButton type="submit">Iniciar sesión</button>
+    <button tuiButton type="submit" [disabled]="loading()" [attr.aria-busy]="loading()">
+      @if (loading()) {
+        <tui-loader size="s" [inheritColor]="true"></tui-loader>
+        Iniciando sesión…
+      } @else {
+        Iniciar sesión
+      }
+    </button>
     <a routerLink="/forgot-password">¿Has olvidado tu contraseña?</a>
   </form>
 </main>

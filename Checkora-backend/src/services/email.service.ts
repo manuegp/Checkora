@@ -136,3 +136,35 @@ Si no esperabas esta invitación, puedes ignorar este correo.`,
     idempotencyKey: input.idempotencyKey,
   });
 }
+
+export async function sendGuestSubmissionNotificationEmail(input: {
+  to: string;
+  ownerName: string;
+  guestName: string;
+  guestEmail: string;
+  dashboardUrl: string;
+  idempotencyKey?: string;
+}): Promise<string | undefined> {
+  const ownerName = input.ownerName.trim();
+  const guestName = input.guestName.trim();
+  const guestEmail = input.guestEmail.trim();
+  const email = renderEmailTemplate({
+    preview: `${guestName} ha completado un registro de huésped.`,
+    title: 'Nuevo registro de huésped',
+    contentHtml: `<p style="margin:0 0 16px">Hola ${escapeHtml(ownerName)},</p><p style="margin:0 0 16px"><strong>${escapeHtml(guestName)}</strong> ha completado el formulario de registro asociado a tu enlace.</p><p style="margin:0">Email del huésped: <a href="mailto:${escapeHtml(guestEmail)}">${escapeHtml(guestEmail)}</a></p>`,
+    contentText: `Hola ${ownerName},
+
+${guestName} ha completado el formulario de registro asociado a tu enlace.
+
+Email del huésped: ${guestEmail}`,
+    callToAction: { label: 'Abrir mis registros', href: input.dashboardUrl },
+  });
+
+  return sendEmail({
+    to: input.to,
+    subject: 'Nuevo registro de huésped en Checkora',
+    html: email.html,
+    text: email.text,
+    idempotencyKey: input.idempotencyKey,
+  });
+}

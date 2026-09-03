@@ -1,11 +1,11 @@
-import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, signal} from '@angular/core';
 import {Router, RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
-import {TuiButton} from '@taiga-ui/core';
+import {TuiButton, TuiLoader} from '@taiga-ui/core';
 import {AuthService} from '../../auth.service';
 
 @Component({
   selector: 'app-private-layout',
-  imports: [RouterLink, RouterLinkActive, RouterOutlet, TuiButton],
+  imports: [RouterLink, RouterLinkActive, RouterOutlet, TuiButton, TuiLoader],
   templateUrl: './private-layout.component.html',
   styleUrl: './private-layout.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -13,9 +13,19 @@ import {AuthService} from '../../auth.service';
 export class PrivateLayoutComponent {
   protected readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  protected readonly loggingOut = signal(false);
 
   protected async logout(): Promise<void> {
-    await this.auth.logout();
-    await this.router.navigateByUrl('/login');
+    if (this.loggingOut()) {
+      return;
+    }
+
+    this.loggingOut.set(true);
+    try {
+      await this.auth.logout();
+      await this.router.navigateByUrl('/login');
+    } finally {
+      this.loggingOut.set(false);
+    }
   }
 }
