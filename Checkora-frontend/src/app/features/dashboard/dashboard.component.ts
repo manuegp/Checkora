@@ -38,7 +38,7 @@ type OwnerSummary = {
 };
 type Dashboard =
   | { role: 'SUPERADMIN'; owners: OwnerSummary[]; submissions: Submission[] }
-  | { role: 'OWNER'; submissions: Submission[] };
+  | { role: 'OWNER'; checkin_url: string | null; submissions: Submission[] };
 
 @Component({
   selector: 'app-dashboard',

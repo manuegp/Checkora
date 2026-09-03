@@ -125,14 +125,29 @@ export async function getDashboard(user: AuthenticatedUser) {
     };
   }
 
-  const submissions = await sql`
-    SELECT ${submissionColumns}
-    FROM guest_submissions s
-    JOIN checkin_links l ON l.id = s.checkin_link_id
-    JOIN checkora_user_roles r ON r.auth_user_id = l.owner_auth_user_id
-    WHERE l.owner_auth_user_id = ${user.id}
-    ORDER BY s.submitted_at DESC
-  ` as SubmissionRow[];
+  const [linkRows, submissions] = await Promise.all([
+    sql`
+      SELECT id AS checkin_link_id
+      FROM checkin_links
+      WHERE owner_auth_user_id = ${user.id}
+        AND active = true
+      LIMIT 1
+    `,
+    sql`
+      SELECT ${submissionColumns}
+      FROM guest_submissions s
+      JOIN checkin_links l ON l.id = s.checkin_link_id
+      JOIN checkora_user_roles r ON r.auth_user_id = l.owner_auth_user_id
+      WHERE l.owner_auth_user_id = ${user.id}
+      ORDER BY s.submitted_at DESC
+    ` as unknown as SubmissionRow[],
+  ]);
 
-  return { role: user.role, submissions: submissions.map(mapSubmission) };
+  const checkinLinkId = (linkRows[0] as {checkin_link_id: string} | undefined)?.checkin_link_id;
+
+  return {
+    role: user.role,
+    checkin_url: checkinLinkId ? `${env.FRONTEND_ORIGIN}/checkin/${checkinLinkId}` : null,
+    submissions: submissions.map(mapSubmission),
+  };
 }

@@ -78,6 +78,25 @@
         </div>
       </section>
     } @else {
+      <section class="owner-link-section">
+        <div class="section-heading">
+          <div>
+            <h2>Tu enlace de registro</h2>
+            <p>Comparte este enlace con tus huéspedes para que completen el formulario.</p>
+          </div>
+        </div>
+        @if (dashboard.checkin_url; as url) {
+          <div class="owner-link">
+            <input type="url" [value]="url" readonly aria-label="Enlace público de registro" />
+            <div class="link-actions">
+              <button tuiButton type="button" appearance="secondary" size="s" (click)="copyFormUrl(url)">Copiar enlace</button>
+              <a tuiButton appearance="primary" size="s" [href]="url" target="_blank" rel="noopener">Abrir formulario</a>
+            </div>
+          </div>
+        } @else {
+          <p class="error">No hay un enlace activo disponible.</p>
+        }
+      </section>
       <section>
         <h2>Registros recibidos</h2>
         <div class="table-wrapper">
