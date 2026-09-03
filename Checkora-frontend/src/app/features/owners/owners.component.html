@@ -2,7 +2,7 @@
   <header>
     <p class="eyebrow">Administración</p>
     <h1>Dar de alta propietario</h1>
-    <p>Crea su cuenta de acceso y su enlace único para huéspedes.</p>
+    <p>Crea su cuenta de acceso y su enlace único para huéspedes. Recibirá un correo para crear su contraseña.</p>
   </header>
 
   <section>
@@ -41,30 +41,13 @@
         <p id="owner-email-error" class="field-error">Introduce un email válido.</p>
       }
 
-      <label for="owner-password">
-        Contraseña inicial
-        <input
-          id="owner-password"
-          type="password"
-          name="password"
-          formControlName="password"
-          autocomplete="new-password"
-          minlength="12"
-          maxlength="128"
-          aria-describedby="owner-password-help owner-password-error"
-        />
-      </label>
-      <p id="owner-password-help" class="hint">Mínimo 12 caracteres. Comparte esta contraseña con el propietario por un canal seguro.</p>
-      @if (form.controls.password.invalid && form.controls.password.touched) {
-        <p id="owner-password-error" class="field-error">La contraseña debe tener al menos 12 caracteres.</p>
-      }
 
       @if (error()) {
         <p class="error" role="alert">{{ error() }}</p>
       }
 
       <button tuiButton type="submit" [disabled]="saving()">
-        {{ saving() ? 'Creando…' : 'Crear propietario y enlace' }}
+        {{ saving() ? 'Creando…' : 'Crear propietario, enlace y enviar invitación' }}
       </button>
     </form>
   </section>

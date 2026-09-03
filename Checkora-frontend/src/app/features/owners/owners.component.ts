@@ -25,7 +25,6 @@ export class OwnersComponent {
   protected readonly form = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(120)]],
     email: ['', [Validators.required, Validators.email, Validators.maxLength(320)]],
-    password: ['', [Validators.required, Validators.minLength(12), Validators.maxLength(128)]],
   });
   protected readonly error = signal('');
   protected readonly createdOwner = signal<CreateOwnerResponse | null>(null);
@@ -34,7 +33,7 @@ export class OwnersComponent {
   protected async submit(): Promise<void> {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.error.set('Completa nombre, email válido y una contraseña de al menos 12 caracteres.');
+      this.error.set('Completa nombre y email válido.');
       return;
     }
 
@@ -50,7 +49,7 @@ export class OwnersComponent {
       this.createdOwner.set(response);
       this.form.reset();
       this.notifications
-        .open('La cuenta y el enlace del propietario se han creado.', {
+        .open('La cuenta se ha creado y se ha enviado el correo de activación al propietario.', {
           appearance: 'positive',
           autoClose: 5_000,
           label: 'Propietario creado',

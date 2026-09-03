@@ -30,6 +30,8 @@ Añade estas variables para **Production** (y, si vas a usar vistas previas, tam
 | `NEON_AUTH_URL` | URL base de Neon Auth que ya usas localmente |
 | `NEON_AUTH_JWKS_URL` | URL JWKS de Neon Auth |
 | `FRONTEND_ORIGIN` | Se actualiza en el paso 4 con la URL final del frontend |
+| `RESEND_API_KEY` | API key de Resend con permiso de envío |
+| `EMAIL_FROM` | Remitente verificado, por ejemplo `Checkora <noreply@tu-dominio.es>` |
 | `PORT` | No hace falta añadirla en Vercel |
 
 Despliega. Comprueba que `https://<tu-api>.vercel.app/api/health` devuelve `status: "ok"`.
@@ -64,13 +66,13 @@ En Neon Auth, añade el mismo dominio como **Trusted Origin / Allowed Origin**. 
 Después verifica:
 
 1. Inicio de sesión de superadmin y propietario.
-2. Alta de un propietario y creación de su enlace.
+2. Alta de un propietario, recepción de su correo de activación y creación de su contraseña desde «recordar contraseña».
 3. Apertura del enlace público en una ventana privada y envío del formulario.
 4. Dashboard y `GET /api/health`.
 
 ## 5. Dominio propio y correo
 
-Cuando tengas dominio propio, configura el dominio del frontend en Vercel y sustituye `FRONTEND_ORIGIN` por ese dominio. Añádelo también como Trusted Origin en Neon Auth. Para enviar correos, conecta Resend al proyecto de la API, verifica el dominio y guarda `RESEND_API_KEY` únicamente en la API.
+Cuando tengas dominio propio, configura el dominio del frontend en Vercel y sustituye `FRONTEND_ORIGIN` por ese dominio. Añádelo también como Trusted Origin en Neon Auth. Para enviar correos, conecta Resend al proyecto de la API, verifica el dominio y guarda `RESEND_API_KEY` y `EMAIL_FROM` únicamente en la API. Sin estas variables no se podrá completar el alta de un propietario con correo de activación.
 
 ## Desarrollo local
 

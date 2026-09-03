@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, inject, signal} from '@angular/core';
 import {NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
-import {RouterLink} from '@angular/router';
+import {ActivatedRoute, RouterLink} from '@angular/router';
 import {TuiButton, TuiNotificationService} from '@taiga-ui/core';
 import {AuthService} from '../../auth.service';
 
@@ -14,6 +14,7 @@ import {AuthService} from '../../auth.service';
 export class ForgotPasswordComponent {
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly auth = inject(AuthService);
+  private readonly route = inject(ActivatedRoute);
   private readonly notifications = inject(TuiNotificationService);
 
   protected readonly submitted = signal(false);
@@ -21,6 +22,11 @@ export class ForgotPasswordComponent {
   protected readonly form = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
   });
+
+  constructor() {
+    const email = this.route.snapshot.queryParamMap.get('email')?.trim();
+    if (email) this.form.controls.email.setValue(email);
+  }
 
   protected async submit(): Promise<void> {
     if (this.form.invalid) {

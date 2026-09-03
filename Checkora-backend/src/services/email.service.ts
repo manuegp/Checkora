@@ -1,5 +1,6 @@
 import { Resend } from 'resend';
 import { env } from '../config/env.js';
+import { escapeHtml, renderEmailTemplate } from '../emails/email-template.renderer.js';
 import { renderPasswordResetEmail } from '../emails/password-reset.template.js';
 
 export class EmailConfigurationError extends Error {
@@ -77,6 +78,36 @@ export async function sendPasswordResetEmail(input: {
   return sendEmail({
     to: input.to,
     subject: email.subject,
+    html: email.html,
+    text: email.text,
+    idempotencyKey: input.idempotencyKey,
+  });
+}
+
+export async function sendOwnerInvitationEmail(input: {
+  to: string;
+  name: string;
+  forgotPasswordUrl: string;
+  idempotencyKey?: string;
+}): Promise<string | undefined> {
+  const name = input.name.trim();
+  const email = renderEmailTemplate({
+    preview: 'Ya puedes activar tu acceso de propietario a Checkora.',
+    title: 'Activa tu acceso a Checkora',
+    contentHtml: `<p style="margin:0">Hola ${escapeHtml(name)},</p><p>Te han dado acceso a Checkora como propietario con esta dirección de correo.</p><p>Para crear tu contraseña y acceder por primera vez, pulsa el botón. Se abrirá el flujo de <strong>recordar contraseña</strong> con tu correo ya indicado. Solicita el enlace seguro y, cuando lo recibas, elige tu contraseña.</p><p>Si no esperabas esta invitación, puedes ignorar este correo.</p>`,
+    contentText: `Hola ${name},
+
+Te han dado acceso a Checkora como propietario con esta dirección de correo.
+
+Para crear tu contraseña y acceder por primera vez, usa el botón «Crear mi contraseña». Se abrirá el flujo de recordar contraseña con tu correo ya indicado. Solicita el enlace seguro y, cuando lo recibas, elige tu contraseña.
+
+Si no esperabas esta invitación, puedes ignorar este correo.`,
+    callToAction: { label: 'Crear mi contraseña', href: input.forgotPasswordUrl },
+  });
+
+  return sendEmail({
+    to: input.to,
+    subject: 'Activa tu acceso a Checkora',
     html: email.html,
     text: email.text,
     idempotencyKey: input.idempotencyKey,
