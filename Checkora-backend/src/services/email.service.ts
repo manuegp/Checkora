@@ -11,7 +11,7 @@ export class EmailConfigurationError extends Error {
 }
 
 export class EmailDeliveryError extends Error {
-  constructor(message: string) {
+  constructor(message: string, readonly providerDetail?: string) {
     super(message);
     this.name = 'EmailDeliveryError';
   }
@@ -41,23 +41,46 @@ function getEmailConfiguration(): { apiKey: string; from: string; replyTo?: stri
   };
 }
 
+function resendErrorDetail(error: unknown): string {
+  if (typeof error !== 'object' || error === null) {
+    return 'Resend no ha devuelto información adicional.';
+  }
+
+  const value = error as Record<string, unknown>;
+  const status = typeof value.statusCode === 'number' ? `HTTP ${value.statusCode}` : undefined;
+  const name = typeof value.name === 'string' ? value.name : undefined;
+  const message = typeof value.message === 'string' ? value.message.trim().slice(0, 500) : undefined;
+
+  return [status, name, message].filter((part): part is string => Boolean(part)).join(' — ')
+    || 'Resend no ha devuelto información adicional.';
+}
+
 export async function sendEmail(input: SendEmailInput): Promise<string | undefined> {
   const configuration = getEmailConfiguration();
   const resend = new Resend(configuration.apiKey);
-  const response = await resend.emails.send(
-    {
-      from: configuration.from,
-      to: [input.to],
-      subject: input.subject,
-      html: input.html,
-      text: input.text,
-      replyTo: configuration.replyTo,
-    },
-    input.idempotencyKey ? { headers: { 'Idempotency-Key': input.idempotencyKey } } : undefined,
-  );
+  let response: Awaited<ReturnType<typeof resend.emails.send>>;
+
+  try {
+    response = await resend.emails.send(
+      {
+        from: configuration.from,
+        to: [input.to],
+        subject: input.subject,
+        html: input.html,
+        text: input.text,
+        replyTo: configuration.replyTo,
+      },
+      input.idempotencyKey ? { headers: { 'Idempotency-Key': input.idempotencyKey } } : undefined,
+    );
+  } catch (error) {
+    throw new EmailDeliveryError(
+      'No se ha podido contactar con Resend.',
+      resendErrorDetail(error),
+    );
+  }
 
   if (response.error) {
-    throw new EmailDeliveryError('Resend no ha podido enviar el correo.');
+    throw new EmailDeliveryError('Resend no ha podido enviar el correo.', resendErrorDetail(response.error));
   }
 
   return response.data?.id;

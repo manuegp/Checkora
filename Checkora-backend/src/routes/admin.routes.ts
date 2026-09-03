@@ -69,10 +69,20 @@ adminRouter.post('/owners', requireAuth, requireRole('SUPERADMIN'), async (req, 
     }
 
     if (error instanceof EmailConfigurationError || error instanceof EmailDeliveryError) {
+      const detail =
+        error instanceof EmailDeliveryError && error.providerDetail
+          ? ` Detalle de Resend: ${error.providerDetail}`
+          : ` Detalle: ${error.message}`;
+
       return res.status(502).json({
         error:
-          'La cuenta se ha creado, pero no se ha podido enviar el correo de activación. Configura el correo transaccional e indica al propietario que use «¿Has olvidado tu contraseña?» con su email.',
+          'La cuenta se ha creado, pero no se ha podido enviar el correo de activación.' + detail,
         ownerCreated: true,
+        emailError: {
+          type: error.name,
+          message: error.message,
+          detail: error instanceof EmailDeliveryError ? error.providerDetail : undefined,
+        },
       });
     }
 
