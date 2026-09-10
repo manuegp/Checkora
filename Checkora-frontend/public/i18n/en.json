@@ -64,7 +64,8 @@
       "clear": "Clear signature"
     },
     "privacy": {
-      "accept": "I accept the privacy policy.",
+      "acceptPrefix": "I have read and accept the",
+      "policyLink": "privacy policy",
       "error": "You must accept the privacy policy."
     },
     "submit": "Submit registration",

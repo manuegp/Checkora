@@ -57,7 +57,7 @@
 
     </tui-elastic-container>
 
-    <div class="privacy"><label for="privacy-accepted"><input id="privacy-accepted" tuiCheckbox type="checkbox" formControlName="privacyAccepted" [attr.aria-invalid]="form.controls.privacyAccepted.invalid && form.controls.privacyAccepted.touched" /> {{ 'checkin.privacy.accept' | transloco }} *</label>@if (form.controls.privacyAccepted.invalid && form.controls.privacyAccepted.touched) {<p class="field-error">{{ 'checkin.privacy.error' | transloco }}</p>}</div>
+    <div class="privacy"><label for="privacy-accepted"><input id="privacy-accepted" tuiCheckbox type="checkbox" formControlName="privacyAccepted" [attr.aria-invalid]="form.controls.privacyAccepted.invalid && form.controls.privacyAccepted.touched" /> {{ 'checkin.privacy.acceptPrefix' | transloco }} <a [routerLink]="['privacy']" target="_blank" rel="noopener">{{ 'checkin.privacy.policyLink' | transloco }}</a>. *</label>@if (form.controls.privacyAccepted.invalid && form.controls.privacyAccepted.touched) {<p class="field-error">{{ 'checkin.privacy.error' | transloco }}</p>}</div>
     @if (submitError()) {<p class="field-error" role="alert">{{ submitError() }}</p>}
     @if (submitted()) {<p class="submit-success" role="status">{{ 'checkin.submitSuccess' | transloco }}</p>}
     @if (emailNotificationSent() === false) {<p class="submit-warning" role="status">{{ 'checkin.submitEmailWarning' | transloco }}</p>}

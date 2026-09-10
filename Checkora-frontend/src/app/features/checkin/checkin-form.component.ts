@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, ElementRef, WritableSignal, computed, inject, signal, viewChild } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TuiButton } from '@taiga-ui/core/components/button';
 import { TuiElasticContainer } from '@taiga-ui/layout/components/elastic-container';
@@ -35,7 +35,7 @@ const languageLabel = (value: unknown): string => {
   return typeof value === 'string' ? value : '';
 };
 
-@Component({selector:'app-checkin-form',imports:[FormsModule,ReactiveFormsModule,TranslocoPipe,TuiButton,TuiCheckbox,TuiComboBox,TuiElasticContainer,TuiForm,TuiDataList,TuiFilterByInputPipe,TuiFlagPipe,TuiInputDate,TuiSelect],providers:[{provide:TUI_LANGUAGE,useValue:signal(TUI_ENGLISH_LANGUAGE)},tuiItemsHandlersProvider({stringify: signal(languageLabel)})],templateUrl:'./checkin-form.component.html',styleUrl:'./checkin-form.component.scss',changeDetection:ChangeDetectionStrategy.OnPush})
+@Component({selector:'app-checkin-form',imports:[FormsModule,ReactiveFormsModule,RouterLink,TranslocoPipe,TuiButton,TuiCheckbox,TuiComboBox,TuiElasticContainer,TuiForm,TuiDataList,TuiFilterByInputPipe,TuiFlagPipe,TuiInputDate,TuiSelect],providers:[{provide:TUI_LANGUAGE,useValue:signal(TUI_ENGLISH_LANGUAGE)},tuiItemsHandlersProvider({stringify: signal(languageLabel)})],templateUrl:'./checkin-form.component.html',styleUrl:'./checkin-form.component.scss',changeDetection:ChangeDetectionStrategy.OnPush})
 export class CheckinFormComponent {
   private readonly builder = inject(FormBuilder);
   private readonly transloco = inject(TranslocoService);

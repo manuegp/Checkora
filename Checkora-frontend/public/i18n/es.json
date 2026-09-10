@@ -64,7 +64,8 @@
       "clear": "Borrar firma"
     },
     "privacy": {
-      "accept": "Acepto la política de privacidad.",
+      "acceptPrefix": "He leído y acepto la",
+      "policyLink": "política de privacidad",
       "error": "Debes aceptar la política de privacidad."
     },
     "submit": "Enviar registro",

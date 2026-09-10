@@ -51,6 +51,13 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'checkin/:token/privacy',
+    loadComponent: () =>
+      import('./features/checkin/privacy-policy.component').then(
+        (module) => module.PrivacyPolicyComponent,
+      ),
+  },
+  {
     path: 'checkin/:token',
     loadComponent: () =>
       import('./features/checkin/checkin-form.component').then(
