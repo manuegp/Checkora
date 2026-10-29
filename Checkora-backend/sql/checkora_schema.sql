@@ -38,14 +38,14 @@ CREATE TABLE IF NOT EXISTS checkin_links (
   )
 );
 
--- Datos proporcionados por un huésped desde el enlace público.
+-- Datos proporcionados por un huésped desde el enlace público, incluidos borradores.
 CREATE TABLE IF NOT EXISTS guest_submissions (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   checkin_link_id uuid NOT NULL
     REFERENCES checkin_links(id) ON DELETE RESTRICT,
-  email varchar(320) NOT NULL,
-  first_name varchar(120) NOT NULL,
-  first_surname varchar(120) NOT NULL,
+  email varchar(320),
+  first_name varchar(120),
+  first_surname varchar(120),
   second_surname varchar(120),
   gender varchar(30),
   document_type varchar(30),
@@ -59,9 +59,45 @@ CREATE TABLE IF NOT EXISTS guest_submissions (
   postal_code varchar(24),
   municipality varchar(160),
   signature_url text,
-  privacy_accepted_at timestamptz NOT NULL,
-  submitted_at timestamptz NOT NULL DEFAULT now()
+  privacy_accepted_at timestamptz,
+  submitted_at timestamptz,
+  draft_token_hash varchar(64),
+  draft_data jsonb,
+  is_valid boolean NOT NULL DEFAULT false,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now()
 );
+
+-- Compatibilidad con registros anteriores: ya se validaron y enviaron al crearse.
+-- is_valid indica si TODO el formulario es válido; submitted_at indica su envío.
+ALTER TABLE guest_submissions
+  ADD COLUMN IF NOT EXISTS draft_token_hash varchar(64),
+  ADD COLUMN IF NOT EXISTS draft_data jsonb,
+  ADD COLUMN IF NOT EXISTS is_valid boolean NOT NULL DEFAULT true,
+  ADD COLUMN IF NOT EXISTS created_at timestamptz,
+  ADD COLUMN IF NOT EXISTS updated_at timestamptz;
+
+UPDATE guest_submissions
+SET created_at = COALESCE(created_at, submitted_at, now()),
+    updated_at = COALESCE(updated_at, submitted_at, created_at, now())
+WHERE created_at IS NULL OR updated_at IS NULL;
+
+ALTER TABLE guest_submissions
+  ALTER COLUMN email DROP NOT NULL,
+  ALTER COLUMN first_name DROP NOT NULL,
+  ALTER COLUMN first_surname DROP NOT NULL,
+  ALTER COLUMN privacy_accepted_at DROP NOT NULL,
+  ALTER COLUMN submitted_at DROP NOT NULL,
+  ALTER COLUMN submitted_at DROP DEFAULT,
+  ALTER COLUMN is_valid SET DEFAULT false,
+  ALTER COLUMN created_at SET DEFAULT now(),
+  ALTER COLUMN created_at SET NOT NULL,
+  ALTER COLUMN updated_at SET DEFAULT now(),
+  ALTER COLUMN updated_at SET NOT NULL;
+
+-- El token privado del borrador es distinto del ID público y se guarda como hash SHA-256.
+CREATE UNIQUE INDEX IF NOT EXISTS guest_submissions_draft_token_idx
+  ON guest_submissions (draft_token_hash);
 
 CREATE INDEX IF NOT EXISTS guest_submissions_link_submitted_idx
   ON guest_submissions (checkin_link_id, submitted_at DESC);

@@ -69,6 +69,13 @@
       "error": "You must accept the privacy policy."
     },
     "submit": "Submit registration",
+    "autosave": {
+      "pending": "Changes waiting to be saved…",
+      "saving": "Saving draft…",
+      "saved": "Draft saved automatically.",
+      "error": "Your latest changes could not be saved.",
+      "retry": "Retry saving"
+    },
     "submitSuccess": "Registration sent successfully.",
     "submitEmailWarning": "The registration was saved, but the owner could not be notified by email.",
     "submitSending": "Sending..."

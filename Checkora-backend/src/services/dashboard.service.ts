@@ -6,9 +6,9 @@ type SubmissionRow = {
   id: string;
   owner_name: string | null;
   owner_email: string | null;
-  email: string;
-  first_name: string;
-  first_surname: string;
+  email: string | null;
+  first_name: string | null;
+  first_surname: string | null;
   second_surname: string | null;
   gender: string | null;
   document_type: string | null;
@@ -22,8 +22,11 @@ type SubmissionRow = {
   postal_code: string | null;
   municipality: string | null;
   signature_url: string | null;
-  privacy_accepted_at: string;
-  submitted_at: string;
+  privacy_accepted_at: string | null;
+  submitted_at: string | null;
+  is_valid: boolean;
+  created_at: string;
+  updated_at: string;
 };
 
 type OwnerDashboardRow = {
@@ -57,6 +60,9 @@ function mapSubmission(row: SubmissionRow) {
     signature_url: row.signature_url,
     privacy_accepted_at: row.privacy_accepted_at,
     submitted_at: row.submitted_at,
+    is_valid: row.is_valid,
+    created_at: row.created_at,
+    updated_at: row.updated_at,
   };
 }
 
@@ -81,7 +87,10 @@ const submissionColumns = sql`
   s.municipality,
   s.signature_url,
   s.privacy_accepted_at,
-  s.submitted_at
+  s.submitted_at,
+  s.is_valid,
+  s.created_at,
+  s.updated_at
 `;
 
 export async function getDashboard(user: AuthenticatedUser) {
@@ -106,7 +115,7 @@ export async function getDashboard(user: AuthenticatedUser) {
         FROM guest_submissions s
         JOIN checkin_links l ON l.id = s.checkin_link_id
         JOIN checkora_user_roles r ON r.auth_user_id = l.owner_auth_user_id
-        ORDER BY s.submitted_at DESC
+        ORDER BY COALESCE(s.submitted_at, s.updated_at, s.created_at) DESC
       ` as unknown as Promise<SubmissionRow[]>,
     ]);
 
@@ -139,7 +148,7 @@ export async function getDashboard(user: AuthenticatedUser) {
       JOIN checkin_links l ON l.id = s.checkin_link_id
       JOIN checkora_user_roles r ON r.auth_user_id = l.owner_auth_user_id
       WHERE l.owner_auth_user_id = ${user.id}
-      ORDER BY s.submitted_at DESC
+      ORDER BY COALESCE(s.submitted_at, s.updated_at, s.created_at) DESC
     ` as unknown as SubmissionRow[],
   ]);
 

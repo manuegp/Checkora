@@ -69,6 +69,13 @@
       "error": "Debes aceptar la política de privacidad."
     },
     "submit": "Enviar registro",
+    "autosave": {
+      "pending": "Cambios pendientes de guardar…",
+      "saving": "Guardando borrador…",
+      "saved": "Borrador guardado automáticamente.",
+      "error": "No se han podido guardar los últimos cambios.",
+      "retry": "Reintentar guardado"
+    },
     "submitSuccess": "Registro enviado correctamente.",
     "submitEmailWarning": "El registro se guardo, pero no se pudo avisar al propietario por correo.",
     "submitSending": "Enviando..."

@@ -8,10 +8,13 @@ import { AuthService } from '../../auth.service';
 
 type Submission = {
   id: string;
-  email: string;
-  first_name: string;
-  first_surname: string;
-  submitted_at: string;
+  email: string | null;
+  first_name: string | null;
+  first_surname: string | null;
+  submitted_at: string | null;
+  is_valid: boolean;
+  created_at: string;
+  updated_at: string;
   owner_name: string | null;
   owner_email: string | null;
   second_surname: string | null;
@@ -27,7 +30,7 @@ type Submission = {
   postal_code: string | null;
   municipality: string | null;
   signature_url: string | null;
-  privacy_accepted_at: string;
+  privacy_accepted_at: string | null;
 };
 type OwnerSummary = {
   auth_user_id: string;
@@ -84,6 +87,12 @@ export class DashboardComponent {
 
   protected valueOrDash(value: string | null): string {
     return value?.trim() || '-';
+  }
+
+  protected guestName(submission: Submission): string {
+    return [submission.first_name, submission.first_surname, submission.second_surname]
+      .filter((value) => value?.trim())
+      .join(' ') || 'Huésped sin nombre';
   }
 
   protected documentTypeLabel(value: string | null): string {
